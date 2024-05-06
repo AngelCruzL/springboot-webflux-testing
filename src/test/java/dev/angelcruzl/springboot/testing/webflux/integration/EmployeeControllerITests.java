@@ -112,4 +112,16 @@ public class EmployeeControllerITests {
                 .jsonPath("$.email").isEqualTo(updatedEmployee.getEmail());
     }
 
+    @Test
+    public void testDeleteEmployee() {
+        EmployeeDto savedEmployee = service.saveEmployee(employeeDto).block();
+
+        webTestClient.delete().uri("/api/v1/employees/{id}", Collections.singletonMap("id", savedEmployee.getId()))
+                .exchange()
+                .expectStatus().isNoContent()
+                .expectBody()
+                .consumeWith(System.out::println)
+                .isEmpty();
+    }
+
 }
