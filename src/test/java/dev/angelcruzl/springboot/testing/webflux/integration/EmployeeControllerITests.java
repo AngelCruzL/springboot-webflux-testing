@@ -58,4 +58,25 @@ public class EmployeeControllerITests {
                 .jsonPath("$.email").isEqualTo(employeeDto.getEmail());
     }
 
+    @Test
+    public void testGetAllEmployees() {
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setFirstName("Angel");
+        employeeDto.setLastName("Cruz");
+        employeeDto.setEmail("me@angelcruzl.dev");
+        service.saveEmployee(employeeDto).block();
+
+        EmployeeDto employeeDto2 = new EmployeeDto();
+        employeeDto2.setFirstName("John");
+        employeeDto2.setLastName("Doe");
+        employeeDto2.setEmail("test@mail.com");
+        service.saveEmployee(employeeDto2).block();
+
+        webTestClient.get().uri("/api/v1/employees")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(EmployeeDto.class);
+    }
+
 }
