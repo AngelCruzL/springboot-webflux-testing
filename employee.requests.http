@@ -23,3 +23,6 @@ Content-Type: application/json
   "lastName": "Cruz",
   "email": "edited@mail.test"
 }
+
+### Delete employee by id
+DELETE {{host}}/api/v1/employees/66382f244e9cbf1b797e62ec
