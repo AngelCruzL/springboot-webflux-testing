@@ -8,6 +8,7 @@ import dev.angelcruzl.springboot.testing.webflux.repository.EmployeeRepository;
 import dev.angelcruzl.springboot.testing.webflux.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -31,5 +32,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee.map(EmployeeMapper::toEmployeeDto)
                 .switchIfEmpty(Mono.error(
                         new NotFoundException("Employee with id " + id + " not found")));
+    }
+
+    @Override
+    public Flux<EmployeeDto> getAllEmployees() {
+        Flux<Employee> employeeFlux = repository.findAll();
+
+        return employeeFlux.map(EmployeeMapper::toEmployeeDto).
+                switchIfEmpty(Flux.empty());
     }
 }

@@ -1,3 +1,6 @@
+### Get all employees
+GET {{host}}/api/v1/employees
+
 ### Create new employee
 POST {{host}}/api/v1/employees
 Content-Type: application/json

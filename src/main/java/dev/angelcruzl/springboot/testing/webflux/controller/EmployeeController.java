@@ -5,6 +5,7 @@ import dev.angelcruzl.springboot.testing.webflux.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -13,6 +14,11 @@ import reactor.core.publisher.Mono;
 public class EmployeeController {
 
     private EmployeeService service;
+
+    @GetMapping
+    public Flux<EmployeeDto> getAllEmployees() {
+        return service.getAllEmployees();
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
