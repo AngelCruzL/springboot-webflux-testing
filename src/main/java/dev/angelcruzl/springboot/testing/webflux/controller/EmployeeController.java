@@ -31,4 +31,10 @@ public class EmployeeController {
         return service.getEmployeeById(id);
     }
 
+    @PutMapping("/{id}")
+    public Mono<EmployeeDto> updateEmployee(@PathVariable("id") String employeeId,
+                                            @RequestBody EmployeeDto employeeDto) {
+        return service.updateEmployee(employeeId, employeeDto);
+    }
+
 }

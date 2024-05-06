@@ -13,3 +13,13 @@ Content-Type: application/json
 
 ### Get employee by id
 GET {{host}}/api/v1/employees/663829870f1b7f389936368f
+
+### Update employee by id
+PUT {{host}}/api/v1/employees/663829870f1b7f389936368f
+Content-Type: application/json
+
+{
+  "firstName": "Angel",
+  "lastName": "Cruz",
+  "email": "edited@mail.test"
+}
