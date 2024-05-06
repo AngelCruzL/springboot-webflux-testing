@@ -2,6 +2,7 @@ package dev.angelcruzl.springboot.testing.webflux.service.impl;
 
 import dev.angelcruzl.springboot.testing.webflux.dto.EmployeeDto;
 import dev.angelcruzl.springboot.testing.webflux.entity.Employee;
+import dev.angelcruzl.springboot.testing.webflux.exception.NotFoundException;
 import dev.angelcruzl.springboot.testing.webflux.mapper.EmployeeMapper;
 import dev.angelcruzl.springboot.testing.webflux.repository.EmployeeRepository;
 import dev.angelcruzl.springboot.testing.webflux.service.EmployeeService;
@@ -21,5 +22,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         Mono<Employee> savedEmployee = repository.save(employee);
 
         return savedEmployee.map(EmployeeMapper::toEmployeeDto);
+    }
+
+    @Override
+    public Mono<EmployeeDto> getEmployeeById(String id) {
+        Mono<Employee> employee = repository.findById(id);
+
+        return employee.map(EmployeeMapper::toEmployeeDto)
+                .switchIfEmpty(Mono.error(
+                        new NotFoundException("Employee with id " + id + " not found")));
     }
 }
