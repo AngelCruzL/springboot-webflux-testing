@@ -1,7 +1,9 @@
 package dev.angelcruzl.springboot.testing.webflux.integration;
 
 import dev.angelcruzl.springboot.testing.webflux.dto.EmployeeDto;
+import dev.angelcruzl.springboot.testing.webflux.repository.EmployeeRepository;
 import dev.angelcruzl.springboot.testing.webflux.service.EmployeeService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,15 +18,25 @@ public class EmployeeControllerITests {
     private EmployeeService service;
 
     @Autowired
+    private EmployeeRepository repository;
+
+    @Autowired
     private WebTestClient webTestClient;
 
-    @Test
-    public void testSaveEmployee() {
-        EmployeeDto employeeDto = new EmployeeDto();
+    private EmployeeDto employeeDto;
+
+    @BeforeEach
+    public void setup() {
+        employeeDto = new EmployeeDto();
         employeeDto.setFirstName("Angel");
         employeeDto.setLastName("Cruz");
         employeeDto.setEmail("me@angelcruzl.dev");
 
+        repository.deleteAll().subscribe();
+    }
+
+    @Test
+    public void testSaveEmployee() {
         webTestClient.post().uri("/api/v1/employees")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -40,11 +52,6 @@ public class EmployeeControllerITests {
 
     @Test
     public void testGetEmployeeById() {
-        EmployeeDto employeeDto = new EmployeeDto();
-        employeeDto.setFirstName("Angel");
-        employeeDto.setLastName("Cruz");
-        employeeDto.setEmail("test@angelcruzl.dev");
-
         EmployeeDto savedEmployee = service.saveEmployee(employeeDto).block();
 
         webTestClient.get().uri("/api/v1/employees/" + savedEmployee.getId())
@@ -60,10 +67,6 @@ public class EmployeeControllerITests {
 
     @Test
     public void testGetAllEmployees() {
-        EmployeeDto employeeDto = new EmployeeDto();
-        employeeDto.setFirstName("Angel");
-        employeeDto.setLastName("Cruz");
-        employeeDto.setEmail("me@angelcruzl.dev");
         service.saveEmployee(employeeDto).block();
 
         EmployeeDto employeeDto2 = new EmployeeDto();
@@ -76,7 +79,8 @@ public class EmployeeControllerITests {
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(EmployeeDto.class);
+                .expectBodyList(EmployeeDto.class)
+                .hasSize(2);
     }
 
 }
